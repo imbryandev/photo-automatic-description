@@ -11,15 +11,6 @@ Aplicación completa (Flutter + NestJS + OpenAI) que permite al usuario **tomar 
 - **IA:** OpenAI GPT-4o (Vision)  
 - **Despliegue:** Render (nube gratuita)
 
----
-
-## 🧩 Estructura del repositorio
-📦 photo-automatic-description
-┣ 📁 backend-nest # API REST en NestJS que envía la imagen a ChatGPT
-┗ 📁 flutter_app # Aplicación Flutter que captura, envía y muestra la descripción
-
----
-
 ## ⚙️ Cómo ejecutar localmente
 
 ### 1️⃣ Backend (NestJS)
