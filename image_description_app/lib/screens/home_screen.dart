@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:image_description_app/widgets/description_view.dart';
 import 'package:image_picker/image_picker.dart';
 import '../services/image_service.dart';
 import '../widgets/image_preview.dart';
@@ -68,15 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: ImagePreview(imageFile: _selectedImage),
                 ),
                 const SizedBox(height: 20),
-                if (_description != null)
-                  Text(
-                    _description!,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
+                if (_description != null) DescriptionView(description: _description),
                 const SizedBox(height: 20),
                 Row(
                   children: [

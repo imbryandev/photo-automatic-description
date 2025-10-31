@@ -1,13 +1,17 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../models/image_description.dart';
 
 class ImageService {
-  // ⚠️ Cambia esta URL por la de tu backend desplegado
-  final String _baseUrl = 'https://tu-backend.onrender.com/describe';
+  final String _baseUrl = dotenv.env['BACKEND_URL'] ?? '';
 
   Future<ImageDescription> describeImage(File image) async {
+    if (_baseUrl.isEmpty) {
+      throw Exception('BACKEND_URL no está configurado en el .env');
+    }
+
     final request = http.MultipartRequest('POST', Uri.parse(_baseUrl))
       ..files.add(await http.MultipartFile.fromPath('file', image.path));
 
