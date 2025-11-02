@@ -12,7 +12,9 @@ class ImageService {
       throw Exception('BACKEND_URL no está configurado en el .env');
     }
 
-    final request = http.MultipartRequest('POST', Uri.parse(_baseUrl))
+    final endpoint = '$_baseUrl/describe';
+
+    final request = http.MultipartRequest('POST', Uri.parse(endpoint))
       ..files.add(await http.MultipartFile.fromPath('file', image.path));
 
     final response = await request.send();

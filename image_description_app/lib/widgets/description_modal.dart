@@ -1,18 +1,24 @@
 import 'package:flutter/material.dart';
 
-class DescriptionView extends StatelessWidget {
-  const DescriptionView({super.key, this.description});
+class DescriptionModal extends StatelessWidget {
   final String? description;
+  final VoidCallback? onClose;
+
+  const DescriptionModal({
+    super.key,
+    this.description,
+    this.onClose,
+  });
+
   @override
-  Widget build(BuildContext context) {  
+  Widget build(BuildContext context) {
     if (description == null) {
       return const SizedBox.shrink();
     }
+
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 500),
-      child: description == null
-      ? const SizedBox.shrink()
-      : AnimatedContainer(
+      child: AnimatedContainer(
         key: ValueKey(description),
         duration: const Duration(milliseconds: 400),
         curve: Curves.easeOut,
@@ -29,9 +35,21 @@ class DescriptionView extends StatelessWidget {
           ],
         ),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
+            // 🔹 Botón de cerrar en la esquina superior derecha
+            Align(
+              alignment: Alignment.topRight,
+              child: IconButton(
+                icon: const Icon(Icons.close, color: Colors.grey),
+                onPressed: onClose,
+                tooltip: 'Cerrar',
+              ),
+            ),
+
             const Icon(Icons.auto_awesome, color: Colors.indigo, size: 36),
             const SizedBox(height: 10),
+
             const Text(
               'Descripción generada por IA',
               style: TextStyle(
@@ -39,7 +57,9 @@ class DescriptionView extends StatelessWidget {
                 fontSize: 18,
               ),
             ),
+
             const SizedBox(height: 8),
+
             Text(
               description!,
               textAlign: TextAlign.center,

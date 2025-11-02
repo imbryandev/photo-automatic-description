@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:image_description_app/widgets/description_view.dart';
+import 'package:image_description_app/widgets/description_modal.dart';
 import 'package:image_picker/image_picker.dart';
 import '../services/image_service.dart';
 import '../widgets/image_preview.dart';
@@ -21,7 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String? _description;
   bool _isLoading = false;
 
-  Future<void> _pickImage() async {
+  Future<void> _pickImageFromGallery() async {
     final XFile? pickedFile =
         await _picker.pickImage(source: ImageSource.gallery);
 
@@ -31,6 +31,25 @@ class _HomeScreenState extends State<HomeScreen> {
         _description = null;
       });
     }
+  }
+
+  Future<void> _takePhoto() async {
+    final XFile? capturedFile =
+        await _picker.pickImage(source: ImageSource.camera);
+
+    if (capturedFile != null) {
+      setState(() {
+        _selectedImage = File(capturedFile.path);
+        _description = null;
+      });
+    }
+  }
+
+  Future<void> _removeImage() async {
+    setState(() {
+      _selectedImage = null;
+      _description = null;
+    });
   }
 
   Future<void> _analyzeImage() async {
@@ -66,23 +85,75 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Column(
               children: [
                 Expanded(
-                  child: ImagePreview(imageFile: _selectedImage),
+                  child: Stack(
+                    children: [
+                      ImagePreview(imageFile: _selectedImage),
+                      if (_selectedImage != null)
+                        Positioned(
+                          top: 12,
+                          right: 12,
+                          child: GestureDetector(
+                            onTap: _removeImage,
+                            child: Container(
+                              padding: const EdgeInsets.all(6),
+                              decoration: BoxDecoration(
+                                color: Colors.black.withValues(alpha: 0.6),
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(
+                                Icons.close,
+                                color: Colors.white,
+                                size: 22,
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
                 ),
                 const SizedBox(height: 20),
-                if (_description != null) DescriptionView(description: _description),
+                if (_description != null)
+                DescriptionModal(
+                  description: _description,
+                  onClose: () {
+                    setState(() {
+                      _description = null;
+                    });
+                  },
+                ),
                 const SizedBox(height: 20),
                 Row(
                   children: [
                     Expanded(
                       child: ElevatedButton.icon(
-                        onPressed: _pickImage,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          foregroundColor: Colors.blue,
+                        ),
+                        onPressed: _pickImageFromGallery,
                         icon: const Icon(Icons.photo_library),
-                        label: const Text('Seleccionar Imagen'),
+                        label: const Text('Galería'),
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: 8),
                     Expanded(
                       child: ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          foregroundColor: Colors.blue,
+                        ),
+                        onPressed: _takePhoto,
+                        icon: const Icon(Icons.camera_alt),
+                        label: const Text('Cámara'),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue,
+                          foregroundColor: Colors.white,
+                        ),
                         onPressed: _analyzeImage,
                         icon: const Icon(Icons.cloud),
                         label: const Text('Analizar'),

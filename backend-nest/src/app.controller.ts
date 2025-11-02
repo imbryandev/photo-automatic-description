@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Controller,
+  HttpCode,
   Post,
   UploadedFile,
   UseInterceptors,
@@ -15,14 +16,19 @@ export class AppController {
 
   @Post('describe')
   @UseInterceptors(FileInterceptor('file'))
+  @HttpCode(200)
   async describeImage(
     @UploadedFile() file: Express.Multer.File,
   ): Promise<DescribeResponse> {
+    console.log('Enter describe image endpoint');
+
     if (!file) throw new BadRequestException('No file uploaded');
 
     try {
-      return await this.appService.describeImage(file);
+      const description = await this.appService.describeImage(file);
+      return description;
     } catch (e) {
+      console.error('❌ Error al procesar imagen:', e);
       throw new BadRequestException(`Error processing image: ${e}`);
     }
   }
